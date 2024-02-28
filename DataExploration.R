@@ -27,26 +27,31 @@ missingness <- data %>%
   count(is.na(shares))
 
 # Checking data type
-data %>% 
+data_types <- data %>% 
   count(is.numeric(shares))
 
 # Distribution Analysis
   # Box Plot w/ Outliers
-data %>% 
+plotOutliers <- data %>% 
   ggplot(aes(x = shares)) +
   geom_boxplot(width = 0.1, fill = "skyblue", color = "black") +
   labs(title = 'Shares Box Plot (With Outliers)') +
   theme_bw()
 
+print(plotOutliers)
+
   #Box Plot without Outliers 
-data %>% 
+plotNoOutliers <- data %>% 
   filter(shares >= quantile(shares, probs = .1 ) & shares <= quantile(shares, probs = .9)) %>% 
   ggplot(aes(x = shares)) +
   geom_boxplot(width = 0.1, fill = "skyblue", color = "black") +
   labs(title = "Distribution of Shares (Outliers Removed)", x = 'Number of Shares') +
   theme_bw()
+
+print(plotNoOutliers)
+
   # Box Plot and Violin without Outliers
-data %>% 
+plotCurveNoOutliers <- data %>% 
   filter(shares >= quantile(shares, probs = .1 ) & shares <= quantile(shares, probs = .9)) %>% 
 ggplot(aes(x = "", y = shares)) +
   geom_violin(fill = "skyblue", color = "blue", alpha = 0.5) +
@@ -55,6 +60,22 @@ ggplot(aes(x = "", y = shares)) +
   labs(title = "Distribution of Shares (Outliers Removed)", x = NULL, y = "Number of Shares") +
   theme_bw()
 
+print(plotCurveNoOutliers)
+
 # Part B (High-Level Summary of Variables)
+
+# Analyze Missing Data
+missing_by_column <- tibble(Column = names(data), Missing_Values = sapply(data, function(x) sum(is.na(x))))
+
+# Create a histogram for each column to view distributions
+df_long <- data %>%  
+  select(-url) %>% 
+  pivot_longer(cols = everything(), names_to = "Column", values_to = "Value")
+
+histograms <- ggplot(df_long, aes(x = Value)) +
+  geom_histogram() +
+  facet_wrap(~Column, scales = "free")
+
+print(histograms)
 
 # Part C (Analysis of Independent Variables)
