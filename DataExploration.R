@@ -70,6 +70,12 @@ print(plotCurveNoOutliers)
 # Analyze Missing Data
 missing_by_column <- tibble(Column = names(data), Missing_Values = sapply(data, function(x) sum(is.na(x))))
 
+correlation_matrix <- data %>% 
+  select(-url) %>% 
+  cor()
+print(correlation_matrix)
+
+
 # Create a histogram for each column to view distributions
 df_long <- data %>%  
   select(-url) %>% 
